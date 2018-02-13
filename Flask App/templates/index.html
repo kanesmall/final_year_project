@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Film Search</title>
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+    <!-- Custom styles for this template -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/portfolio-item.css') }}">
+
+  </head>
+
+  <body id="film_backdrop">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Film Search</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="navbar-nav ml-auto" id="navbarResponsive">
+          <form class="mx-2 my-auto d-inline w-100">
+            <input class="form-control typeahead" type="text" placeholder="Search...">
+            <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+          </form>
+        </div>
+      </div>
+    </nav>
+
+    <div id="outer-container">
+
+      <!-- Page Content -->
+      <div class="container">
+
+        <!-- Portfolio Item Heading -->
+        <h1 class="my-4" id="film_title">Inception</h1>
+
+        <!-- Portfolio Item Row -->
+        <div class="row">
+
+          <div class="col-md-4">
+            <img class="img-fluid" id="film_poster" src="https://image.tmdb.org/t/p/w600_and_h900_bestv2/qmDpIHrmpJINaRKAfWQfftjCdyi.jpg" alt="" height="800px" width="400px">
+          </div>
+
+          <div class="col-md-8">
+            <div class="row">
+              <div class="col-md-4">
+                <h3 class="my-3">User Rating</h3>
+                <p id="film_vote_average">81%</p>
+              </div>
+              <div class="col-md-4">
+                <h3 class="my-3">Predicted Rating</h3>
+                <p id="film_predicted_average">%</p>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-8">
+                <h3 class="my-3">Overview</h3>
+                <p id="film_overview">Cobb, a skilled thief who commits corporate espionage by infiltrating the subconscious of his targets is offered a chance to regain his old life as payment for a task considered to be impossible: "inception", the implantation of another person's idea into a target's subconscious.</p>
+              </div>
+              <div class="col-md-4">
+                <h3 class="my-3">Genres</h3>
+                <ul id="film_genres">
+                  <li>Action</li>
+                  <li>Adventure</li>
+                  <li>Mystery</li>
+                  <li>Science Fiction</li>
+                  <li>Thriller</li>
+                </ul>
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-md-4">
+                <h4 class="my-4">Runtime</h4>
+                <p id="film_runtime">2h 28m</p>
+              </div>
+              <div class="col-md-4">
+                <h4 class="my-4">Budget</h4>
+                <p id="film_budget">$160,000,000</p>
+              </div>
+              <div class="col-md-4">
+                <h4 class="my-4">Revenue</h4>
+                <p id="film_revenue">$825,532,764</p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+        <!-- /.row -->
+
+      </div>
+      <!-- /.container -->
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer bg-dark">
+      <div class="container">
+        <p class="m-0 text-center text-white">Copyright &copy; Kane Small 2018</p>
+      </div>
+      <!-- /.container -->
+    </footer>
+
+    <!--   Core JS Files   -->
+	<script type="text/javascript" src="{{ url_for('static', filename='js/jquery-3.3.1.min.js') }}"></script>
+	<script type="text/javascript" src="{{ url_for('static', filename='js/bootstrap.bundle.min.js') }}"></script>
+
+    <!--   Typeahead JS Files   -->
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/typeahead.js/0.10.4/typeahead.bundle.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/handlebars.js/2.0.0/handlebars.min.js"></script>
+    <script type="text/javascript" src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+
+</html>
