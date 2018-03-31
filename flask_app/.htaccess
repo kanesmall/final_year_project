@@ -1,0 +1,5 @@
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION BEGIN
+PassengerAppRoot "/home/kanesmal/public_html/filmpy"
+PassengerBaseURI "/filmpy"
+PassengerPython "/home/kanesmal/virtualenv/public__html_filmpy/2.7/bin/python2.7"
+# DO NOT REMOVE. CLOUDLINUX PASSENGER CONFIGURATION END
