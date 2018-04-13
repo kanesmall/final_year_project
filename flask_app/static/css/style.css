@@ -1,0 +1,150 @@
+body {
+	padding-top: 54px;
+}
+
+.footer {
+	margin-top: 54px;
+	bottom: 0;
+	width: 100%;
+	/* Set the fixed height of the footer here */
+	height: 60px;
+	line-height: 60px; /* Vertically center the text there */
+	background-color: #f5f5f5;
+}
+
+.progressbar-text {
+	font-size: 1.5rem;
+}
+
+#film_tagline {
+	font-size: 1rem;
+	font-weight: 300;
+	font-style: italic;
+}
+
+#film_release_date_title {
+	font-size: 1.5rem;
+    font-style: italic;
+    font-weight: 400;
+}
+
+#film_poster {
+	box-shadow: 0 4px 16px rgba(0,0,0,0.5);
+	margin-bottom: 10px;
+}
+
+#film_genres {	
+	list-style-type: none;
+	padding: 0;
+	width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-start;
+}
+
+#film_genres li, #film_release_date, #film_runtime, #film_budget, #film_revenue {
+	margin-right: 8px;
+    margin-bottom: 10px;
+    line-height: 24px;
+    font-size: 0.9em;
+    box-sizing: border-box;
+    white-space: nowrap;
+	background-color: #fff;
+    border: 1px solid #d7d7d7;
+    color: #000;
+    padding: 4px 10px;
+    border-radius: 4px;
+}
+
+#film_actors {
+	list-style-type: none;
+    list-style-position: inside;
+    margin: 0;
+    padding: 0;
+    display: flex;
+	overflow-x: auto;
+}
+
+#film_actors li {
+	border: 1px solid #e3e3e3;
+    padding-bottom: 10px;
+	width: 140px;
+    background-color: #fff;
+    box-sizing: border-box;
+    margin-right: 14px;
+	box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+#film_actors li img {
+	width: 138px;
+    height: 175px;
+	display: block;
+}
+
+#film_actors li p {
+	padding: 10px 10px 0 10px;
+    line-height: 1.4em;
+    margin: 0;
+    overflow: hidden;
+}
+
+.actor_name {
+	font-size: 1em;
+	font-weight: bold;
+}
+
+.actor_character {
+	font-size: 0.9em;
+}
+
+#user_rating_container, #predicted_rating_container {
+	width: 100%;
+	position: relative;
+	margin-top: 5px;
+}
+
+/* Twitter Typeahead Custom Styling */
+
+.twitter-typeahead {
+	width: 100%;
+} 
+
+.tt-hint {
+	color: #999
+}
+
+.tt-dropdown-menu {
+	font-weight: lighter;
+	width: 100%;
+	margin-top: 6px;
+	padding: 8px 0;
+	background-color: #fff;
+	border-radius: 5px;
+	border: 1px solid #ccc;
+	border: 1px solid rgba(0, 0, 0, 0.2);
+	-webkit-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+	-moz-box-shadow: 0 5px 10px rgba(0,0,0,.2);
+	box-shadow: 0 5px 10px rgba(0,0,0,.2);
+	max-height: 400px;
+	overflow-y: auto;
+	cursor: pointer;
+}
+
+.tt-suggestion {
+	padding: 3px 20px;
+	font-size: 18px;
+	line-height: 24px;
+}
+
+.tt-suggestion.tt-cursor, .tt-suggestion.tt-cursor small {
+	color: #fff;
+	background-color: #0097cf;
+}
+
+.tt-suggestion p {
+	margin: 0;
+}
+
+.empty-message {
+    padding-left: 12px;
+}

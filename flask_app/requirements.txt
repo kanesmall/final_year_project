@@ -1,0 +1,8 @@
+Flask
+gunicorn
+pymysql
+jsonpickle
+sklearn
+pandas
+numpy
+scipy

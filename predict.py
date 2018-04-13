@@ -1,12 +1,14 @@
 from sklearn.preprocessing import StandardScaler
 from sklearn.tree import DecisionTreeRegressor
 from sklearn.decomposition import PCA
+from sklearn.externals import joblib
+from sklearn.metrics import explained_variance_score
 import pandas as pd
 import numpy as np
 import pymysql, math
 
 def queryDb(sqlQuery):
-    db = pymysql.connect(host='kanesmall.co.uk', user='kanesmal', password='wj5Gy%EE44#iK@j1', db='kanesmal_training_data', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', password='6p8RK#LLy0&7hLo#', db='training_data', charset='utf8')
 
     cursor = db.cursor()
     cursor.execute(sqlQuery)
@@ -18,7 +20,7 @@ def queryDb(sqlQuery):
     return cursor
 
 def queryDb_onehot(sqlQuery, params):
-    db = pymysql.connect(host='kanesmall.co.uk', user='kanesmal', password='wj5Gy%EE44#iK@j1', db='kanesmal_training_data', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', password='6p8RK#LLy0&7hLo#', db='training_data', charset='utf8')
 
     cursor = db.cursor()
     cursor.execute(sqlQuery, params)
@@ -30,7 +32,7 @@ def queryDb_onehot(sqlQuery, params):
     return cursor
 
 def insertData(sqlQuery, params):
-    db = pymysql.connect(host='kanesmall.co.uk', user='kanesmal', password='wj5Gy%EE44#iK@j1', db='kanesmal_training_data', charset='utf8')
+    db = pymysql.connect(host='localhost', user='root', password='6p8RK#LLy0&7hLo#', db='training_data', charset='utf8')
 
     # Prepare a cursor object using the cursor() method
     cursor = db.cursor()
@@ -44,14 +46,22 @@ def insertData(sqlQuery, params):
     return results
 
 # Training data
-sqlQuery_training = "SELECT film_budget, film_runtime, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count, film_vote_average FROM films WHERE film_status = 'Released';"
-search_training = queryDb(sqlQuery_training)
+# sqlQuery_training = "SELECT film_budget, film_runtime, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count, film_vote_average FROM films WHERE film_status = 'Released';"
+# search_training = queryDb(sqlQuery_training)
+#
+# df = pd.DataFrame(columns=['budget','runtime','trailer view count','trailer like count','trailer dislike count', 'user rating'])
+#
+# for idx, item in enumerate(search_training):
+#     df.loc[idx] = item
+#     # print df # For testing purposes
 
-df = pd.DataFrame(columns=['budget','runtime','trailer view count','trailer like count','trailer dislike count', 'user rating'])
+file_train = "training_set.csv"
+df = pd.read_csv(file_train, names=['budget','runtime','trailer view count','trailer like count','trailer dislike count', 'user rating'], low_memory=False)
 
-for idx, item in enumerate(search_training):
-    df.loc[idx] = item
-    # print df # For testing purposes
+sqlQuery_genres = "SELECT genre_id, genre_name FROM genres;"
+genresTable = queryDb(sqlQuery_genres)
+
+genresDict = dict((x, str(y)) for x, y in genresTable)
 
 sqlQuery_ids = "SELECT film_id FROM films WHERE film_status = 'Released';"
 search_ids = queryDb(sqlQuery_ids)
@@ -59,12 +69,15 @@ search_ids = queryDb(sqlQuery_ids)
 genres = []
 
 for id in search_ids:
-    sql = "SELECT genres.genre_name FROM films INNER JOIN film_genres ON film_genres.film_id = films.film_id INNER JOIN genres ON film_genres.genre_id = genres.genre_id WHERE films.film_id = %s;"
+    sql = "SELECT genre_id FROM film_genres WHERE film_id = %s;"
     results = queryDb_onehot(sql, str(id[0]))
     tempList = []
     for result in results:
-        tempList.append(str(result[0]))
+        tempList.append(genresDict.get(result[0]))
+
     genres.append(tempList)
+
+print "Training genres acquired."
 
 genredf = pd.Series(genres)
 
@@ -74,6 +87,8 @@ df = df.join(genredf_onehot)
 
 # Impute NULL values and set to -1
 df = df.fillna(-1)
+
+print df.info(memory_usage='deep')
 
 # features = ['budget','runtime','trailer view count','trailer like count','trailer dislike count', 'user rating']
 # Separating out the features
@@ -96,19 +111,23 @@ finalDf = pd.concat([principalDf, df[['user rating']]], axis = 1)
 regressor = DecisionTreeRegressor(max_depth=2)
 regressor.fit(np.array([finalDf['principal component 1'].T, finalDf['principal component 2']]).T, finalDf['user rating'])
 
+print "Regressor has been trained."
+
+# Save model to a file
+file = 'finalised_model.sav'
+joblib.dump(regressor, file)
+
 # Test data
-sqlQuery_test = "SELECT film_budget, film_runtime, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count FROM films LIMIT 10;"
-search_test = queryDb(sqlQuery_test)
+# sqlQuery_test = "SELECT film_budget, film_runtime, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count FROM films;"
+# search_test = queryDb(sqlQuery_test)
+#
+# df2 = pd.DataFrame(columns=['budget','runtime','trailer view count','trailer like count','trailer dislike count'])
+#
+# for idx, item in enumerate(search_test):
+#     df2.loc[idx] = item
 
-df2 = pd.DataFrame(columns=['budget','runtime','trailer view count','trailer like count','trailer dislike count'])
-
-for idx, item in enumerate(search_test):
-    df2.loc[idx] = item
-
-# print df2 # For testing purposes
-
-df2['budget'] = df2['budget'].astype(float)
-df2['runtime'] = df2['runtime'].astype(float)
+file_test = "test_set.csv"
+df2 = pd.read_csv(file_test, names=['budget','runtime','trailer view count','trailer like count','trailer dislike count'], low_memory=False)
 
 sqlQuery_ids2 = "SELECT film_id FROM films;"
 search_ids2 = queryDb(sqlQuery_ids2)
@@ -116,12 +135,15 @@ search_ids2 = queryDb(sqlQuery_ids2)
 genres2 = []
 
 for id in search_ids2:
-    sql = "SELECT genres.genre_name FROM films INNER JOIN film_genres ON film_genres.film_id = films.film_id INNER JOIN genres ON film_genres.genre_id = genres.genre_id WHERE films.film_id = %s;"
+    sql = "SELECT genre_id FROM film_genres WHERE film_id = %s;"
     results = queryDb_onehot(sql, str(id[0]))
     tempList = []
     for result in results:
-        tempList.append(str(result[0]))
+        tempList.append(genresDict.get(result[0]))
+
     genres2.append(tempList)
+
+print "Test genres acquired."
 
 genredf2 = pd.Series(genres2)
 
@@ -148,3 +170,23 @@ prediction_results = regressor.predict(principalDf2.values)
 for idx, value in enumerate(prediction_results):
     sql = "UPDATE films SET film_prediction_rating = %s WHERE film_id = %s"
     insertData(sql, (int(math.ceil(value * 10)), search_ids2[idx]))
+
+print "Predicted values added to database."
+
+sql = "SELECT film_vote_average FROM films WHERE film_status = 'Released';"
+user_ratings_results = queryDb(sql)
+
+user_ratings = []
+
+for rating in user_ratings_results:
+    user_ratings.append(rating[0] * 10)
+
+sql = "SELECT film_prediction_rating FROM films WHERE film_status = 'Released';"
+predicted_ratings_results = queryDb(sql)
+
+predicted_ratings = []
+
+for rating in predicted_ratings_results:
+    predicted_ratings.append(rating[0])
+
+print explained_variance_score(user_ratings, predicted_ratings)

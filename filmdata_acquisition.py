@@ -2,10 +2,8 @@ import csv
 import progressbar
 import pymysql
 import requests
-import sys
 import time
 import traceback
-import pprint
 
 # Initialise the progressbar
 bar = progressbar.ProgressBar()
@@ -89,7 +87,7 @@ def insertGenres():
         sql = "INSERT INTO genres (genre_id, genre_name) VALUES (%s, %s)"
         insertData(sql, (i['id'], i['name']))
 
-def getTrailerViewCount(id):
+def getTrailerData(id):
     url = "https://api.themoviedb.org/3/movie/" + str(id) + "/videos?api_key=634014fb344524ac652cddca6c0b6442&language=en-GB"
     response = requests.get(url)
     data = response.json()
@@ -295,7 +293,7 @@ def insertFilms():
                 film_vote_average = data['vote_average']
                 film_vote_count = data['vote_count']
 
-                film_trailer_url, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count = getTrailerViewCount(i)
+                film_trailer_url, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count = getTrailerData(i)
 
                 # Insert into films table
                 sql = "INSERT INTO films (film_id, film_title, film_tagline, film_overview, film_poster_url, film_release_date, film_budget, film_revenue, film_runtime, film_status, film_vote_average, film_vote_count, film_trailer_url, film_trailer_view_count, film_trailer_like_count, film_trailer_dislike_count) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)"
