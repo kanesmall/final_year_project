@@ -1,3 +1,23 @@
+function selectFilmStatus(film_status){
+	filmStatusBadge = [];
+	
+	if (film_status == "Released") {
+		filmStatusBadge[0] = "dropdown_film_status badge badge-success";
+	} else if (film_status == "Post Production") {
+		filmStatusBadge[0] = "dropdown_film_status badge badge-info";
+	} else if (film_status == "In Production") {
+		filmStatusBadge[0] = "dropdown_film_status badge badge-primary";
+	} else if (film_status == "Planned") {
+		filmStatusBadge[0] = "dropdown_film_status badge badge-warning";
+	} else {
+		filmStatusBadge[0] = "dropdown_film_status badge badge-danger";
+	}
+	
+	filmStatusBadge[1] = film_status;
+	
+	return filmStatusBadge;
+}
+
 var films = new Bloodhound({
     datumTokenizer: function (datum) {
         return Bloodhound.tokenizers.whitespace(datum.value);
@@ -5,7 +25,7 @@ var films = new Bloodhound({
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     limit: 10,
     remote: {
-        url: 'http://ksmall.me/films?query=%QUERY',
+        url: 'https://ksmall.me/films?query=%QUERY',
         // url: 'http://127.0.0.1:5000/films?query=%QUERY', // Local development only
         // url: 'http://api.themoviedb.org/3/search/movie?api_key=634014fb344524ac652cddca6c0b6442&query=%QUERY&search_type=ngram',
         filter: function (films) {
@@ -14,7 +34,10 @@ var films = new Bloodhound({
                 return {
                     id: film.film_id,
                     title: film.film_title,
-					year: (film.film_release_date != null ? film.film_release_date.substr(0,4) : 'N/A')
+					year: (film.film_release_date != null ? film.film_release_date.substr(0,4) : 'N/A'),
+					poster: (film.film_poster_url != null ? film.film_poster_url : "https://i.imgur.com/GMTSI1w.png"),
+					tagline: film.film_tagline,
+					status: selectFilmStatus(film.film_status)
                 };
             });
         }
@@ -83,7 +106,7 @@ var predicted_rating_bar = new ProgressBar.Line(predicted_rating_container, {
 });
 
 function grabFilmData(film_id) {
-	$.getJSON('http://ksmall.me/films/' + film_id, function(data) {
+	$.getJSON('https://ksmall.me/films/' + film_id, function(data) {
         $('.typeahead').typeahead('val', '');
     
         document.getElementById('film_title').innerHTML = data.film_title + (data.film_release_date != null ? "<span id=\"film_release_date_title\"> (" + data.film_release_date.substr(0,4) + ")</span>" : "") + (data.film_tagline != null ? "<p id=\"film_tagline\">" + data.film_tagline + "</p>" : "");
@@ -178,7 +201,7 @@ $('.typeahead').typeahead({
             '<div class="empty-message">',
             'Unable to find any films that match the current query.',
             '</div>'].join('\n'),
-        suggestion: Handlebars.compile('<p><strong>{{title}}</strong> – {{year}}</p>')
+        suggestion: Handlebars.compile('<div class="searchResult"><img id="dropdown_poster" src="{{poster}}"><p><strong>{{title}}</strong></p><p id="dropdown_year">{{year}}</p><p id="dropdown_tagline">{{tagline}}</p><span class="{{status.[0]}}">{{status.[1]}}</span></div>')
     }
 }).on('typeahead:selected', function (obj, datum) {
     

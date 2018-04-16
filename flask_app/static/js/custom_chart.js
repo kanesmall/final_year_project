@@ -1,4 +1,4 @@
-$.getJSON('http://ksmall.me/show_trends/1', function(json) {
+$.getJSON('https://ksmall.me/show_trends/1', function(json) {
 	
 	let labels = [];
 	let data = [];
@@ -34,7 +34,7 @@ $.getJSON('http://ksmall.me/show_trends/1', function(json) {
     
 });
 
-$.getJSON('http://ksmall.me/show_trends/2', function(json) {
+$.getJSON('https://ksmall.me/show_trends/2', function(json) {
 	
 	let labels = [];
 	let data = [];
